@@ -24,6 +24,11 @@ defmodule Hedwig.Adapters.Slack do
     {:ok, %State{opts: opts, robot: robot, token: token}}
   end
 
+  def handle_cast({:send, {msg, overrides}}, %{conn: conn} = state) do
+    Connection.ws_send(conn, slack_message(msg, overrides))
+    {:noreply, state}
+  end
+
   def handle_cast({:send, msg}, %{conn: conn} = state) do
     Connection.ws_send(conn, slack_message(msg))
     {:noreply, state}
